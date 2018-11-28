@@ -4,8 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js"
   },
   "author": "linwr",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "boom": "^7.2.2",
+    "koa": "^2.6.2",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.3.13"
+  }
 }
