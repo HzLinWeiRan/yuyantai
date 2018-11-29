@@ -1,0 +1,7 @@
+{
+    "log": {
+        "dir": "/Users/luosu/Desktop/work/yuyantai/log",
+        "logFileName": "log.info.log",
+        "errorFileName": "log.error.log"
+    }
+}

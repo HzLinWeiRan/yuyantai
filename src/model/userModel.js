@@ -9,10 +9,6 @@ const userSchema = new Schema({
     },
     password: String,
     role: String,
-}, {
-    _id: true,
-    autoIndex: false,
-    id: true
 })
 
 const UserModel = mongoose.model('user', userSchema)

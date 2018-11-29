@@ -1,28 +1,19 @@
-const { UserModel } = require('../db')
+const { UserModel } = require('../model')
 
 module.exports = {
     async find(query) {
-        // const data = await new Promise(resolve => {
-        //     UserModel.find(query, 'name role', { skip: 1 } , (error, datas) => {
-        //         if (error) {
-        //             throw (error)
-        //         }
-        //         resolve(datas)
-        //     })
-        // })
-        // return data
-        return  UserModel.find(query).select('name role').skip(3).limit(3).exec()
+        return  UserModel.find(query).select('name role').skip(0).limit(500).exec()
     },
     async save(user) {
-        const data = await new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const model = new UserModel(user)
             model.save(error => {
                 if (error) {
-                    throw (error)
+                    reject(error)
+                } else {
+                    resolve(model._id)
                 }
-                resolve(model)
             })
         })
-        return data
     }
 }

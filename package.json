@@ -10,9 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "boom": "^7.2.2",
+    "config": "^3.0.0",
     "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
     "koa-respond": "^2.1.0",
     "koa-router": "^7.4.0",
+    "log4js": "^3.0.6",
     "mongoose": "^5.3.13"
   }
 }

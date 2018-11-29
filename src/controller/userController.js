@@ -13,14 +13,19 @@ userController.get('/query', async (ctx) => {
     ctx.ok(await userProxy.find({}))
 })
 
-userController.get('/save', async (ctx) => {
+userController.post('/save', async (ctx) => {
     // ctx.ok({
     //     mesg: 1231
     // })
+    const {
+        name,
+        password,
+        role
+    } = ctx.request.body
     ctx.ok(await userProxy.save({
-        name: `linwr${new Date().getTime()}`,
-        password: '123456',
-        role: 'user'
+        name,
+        password,
+        role
     }))
 })
 
