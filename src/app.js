@@ -35,7 +35,10 @@ app.use(errorMiddleware)
 app.use(koaJwt({
     secret
 }).unless({
-    path: [/^\/login/]
+    path: [
+        /^\/login/,
+        /^\/register/
+    ]
 }))
 
 app.use(authMiddleware)

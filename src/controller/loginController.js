@@ -10,14 +10,20 @@ const loginController = new Router()
 
 // 用户登陆
 loginController.post('/login', async (ctx) => {
-    const user = {
-        name: 'linwr',
-        exp: Math.floor(Date.now() / 1000) + expiresIn,
-        jti: Date.now()
+    const { name, password } = ctx.request.body
+    const user = await userProxy.findOne({
+        name,
+        password
+    })
+    console.log(user)
+    if (user) {
+        const user = {
+            name: name,
+            exp: Math.floor(Date.now() / 1000) + expiresIn
+        }
+        const token = jwt.sign(user, secret)
+        ctx.ok(token)
     }
-    const token = jwt.sign(user, secret)
-
-    ctx.ok(token)
 })
 // 退出登陆标记token在一段时间内不可用
 loginController.post('/logout', async (ctx) => {
@@ -28,6 +34,22 @@ loginController.post('/logout', async (ctx) => {
     }
     ctx.ok('sucess')
 })
+
+// 账号注册
+loginController.post('/register', async (ctx) => {
+    const { name, password } = ctx.request.body
+    await userProxy.save({
+        name,
+        password
+    })
+    const token = jwt.sign({
+        name,
+        exp: Math.floor(Date.now() / 1000) + expiresIn
+    }, secret)
+    ctx.ok(token)
+})
+
+// 获取当前用户信息
 loginController.get('/getUser', async (ctx) => {
     ctx.ok(ctx.state.user)
 })
