@@ -3,5 +3,9 @@
         "dir": "/Users/luosu/Desktop/work/yuyantai/log",
         "logFileName": "log.info.log",
         "errorFileName": "log.error.log"
+    },
+    "jwt": {
+        "expiresIn": 300,
+        "secret": "123456"
     }
 }

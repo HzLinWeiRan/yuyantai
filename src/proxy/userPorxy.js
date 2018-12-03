@@ -2,7 +2,10 @@ const { UserModel } = require('../model')
 
 module.exports = {
     async find(query) {
-        return  UserModel.find(query).select('name role').skip(0).limit(500).exec()
+        return UserModel.find(query).select('name role').exec()
+    },
+    async findOne(query) {
+        return UserModel.findOne(query).exec()
     },
     async save(user) {
         return new Promise((resolve, reject) => {
@@ -11,7 +14,7 @@ module.exports = {
                 if (error) {
                     reject(error)
                 } else {
-                    resolve(model._id)
+                    resolve(model)
                 }
             })
         })
