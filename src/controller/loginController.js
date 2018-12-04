@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const errorStatus = require('../utils/errorStatus')
 
 const { userProxy } = require('../proxy')
 const redis = require('../utils/redisUtil')
@@ -15,7 +16,6 @@ loginController.post('/login', async (ctx) => {
         name,
         password
     })
-    console.log(user)
     if (user) {
         const user = {
             name: name,
@@ -23,6 +23,11 @@ loginController.post('/login', async (ctx) => {
         }
         const token = jwt.sign(user, secret)
         ctx.ok(token)
+    } else {
+        // ctx.throw(errorStatus.ERROR_IN_USERNAME_OR_PASSWORD)
+        ctx.throw({
+            code: errorStatus.ERROR_IN_USERNAME_OR_PASSWORD
+        })
     }
 })
 // 退出登陆标记token在一段时间内不可用
@@ -33,6 +38,21 @@ loginController.post('/logout', async (ctx) => {
         await redis.set(ctx.header.authorization, true, 'EX', extime)
     }
     ctx.ok('sucess')
+})
+
+// jwt token 续签
+loginController.post('/refreshToken', async (ctx) => {
+    const { name } = ctx.state.user
+    // 旧token延后30s失效
+    setTimeout(() => {
+        redis.set(ctx.header.authorization, true, 'EX', extime)
+    }, 30000)
+    const user = {
+        name: name,
+        exp: Math.floor(Date.now() / 1000) + expiresIn
+    }
+    const token = jwt.sign(user, secret)
+    ctx.ok(token)
 })
 
 // 账号注册

@@ -4,6 +4,20 @@
         "logFileName": "log.info.log",
         "errorFileName": "log.error.log"
     },
+    "redis": {
+        "port": 6379,
+        "host": "127.0.0.1",
+        "family": 4,
+        "password": "123456"
+    },
+    "mongodb": {
+        "url": "mongodb://127.0.0.1:27017",
+        "conf": {
+            "dbName": "yuyantai",
+            "useNewUrlParser": true,
+            "useCreateIndex": true
+        }
+    },
     "jwt": {
         "expiresIn": 300,
         "secret": "123456"

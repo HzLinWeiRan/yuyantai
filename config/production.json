@@ -1,0 +1,27 @@
+{
+    "log": {
+        "dir": "/Users/luosu/Desktop/work/yuyantai/log",
+        "logFileName": "log.info.log",
+        "errorFileName": "log.error.log"
+    },
+    "redis": {
+        "port": 6379,
+        "host": "39.96.33.199",
+        "family": 4,
+        "password": "000000"
+    },
+    "mongodb": {
+        "url": "mongodb://39.96.33.199:27017",
+        "conf": {
+            "user": "yyt",
+            "pass": "yyt",
+            "dbName": "yuyantai",
+            "useNewUrlParser": true,
+            "useCreateIndex": true
+        }
+    },
+    "jwt": {
+        "expiresIn": 300,
+        "secret": "123456"
+    }
+}

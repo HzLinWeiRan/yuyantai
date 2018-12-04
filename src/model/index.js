@@ -1,12 +1,11 @@
 const mongoose = require('mongoose')
+const config = require('config')
 
-mongoose.connect('mongodb://39.96.33.199:27017', {
-    user: 'yyt',
-    pass: 'yyt',
-    dbName: 'yuyantai',
-    useNewUrlParser: true,
-    useCreateIndex: true,
-})
+const mongodbConfig = config.get('mongodb')
+
+const { url, conf } = mongodbConfig
+
+mongoose.connect(url, conf)
 
 module.exports = {
     UserModel: require('./userModel')

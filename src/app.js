@@ -1,4 +1,5 @@
 const Koa = require('koa')
+const http = require('http')
 const bodyParser = require('koa-bodyparser')
 const koaJwt = require('koa-jwt')
 const config = require('config')
@@ -46,4 +47,4 @@ app.use(authMiddleware)
 app.use(routerIndex.routes())
 app.use(routerIndex.allowedMethods())
 
-app.listen(4000)
+http.createServer(app.callback()).listen(4000)
