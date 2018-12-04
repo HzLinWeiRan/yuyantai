@@ -38,7 +38,8 @@ app.use(koaJwt({
 }).unless({
     path: [
         /^\/login/,
-        /^\/register/
+        /^\/register/,
+        /^\/refreshToken/
     ]
 }))
 

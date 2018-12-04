@@ -20,6 +20,8 @@
     },
     "jwt": {
         "expiresIn": 300,
-        "secret": "123456"
+        "secret": "123456",
+        "refreshExpiresIn": 43200,
+        "refreshSecret": "654321"
     }
 }

@@ -5,7 +5,7 @@ const errorStatus = require('../utils/errorStatus')
 
 const { userProxy } = require('../proxy')
 const redis = require('../utils/redisUtil')
-const { secret, expiresIn } = config.get('jwt')
+const { refreshSecret, refreshExpiresIn, secret, expiresIn } = config.get('jwt')
 
 const loginController = new Router()
 
@@ -17,12 +17,18 @@ loginController.post('/login', async (ctx) => {
         password
     })
     if (user) {
-        const user = {
-            name: name,
+        const token = jwt.sign({
+            name,
             exp: Math.floor(Date.now() / 1000) + expiresIn
-        }
-        const token = jwt.sign(user, secret)
-        ctx.ok(token)
+        }, secret)
+        const refreshToken = jwt.sign({
+            name,
+            exp: Math.floor(Date.now() / 1000) + refreshExpiresIn
+        }, refreshSecret)
+        ctx.ok({
+            token,
+            refreshToken
+        })
     } else {
         // ctx.throw(errorStatus.ERROR_IN_USERNAME_OR_PASSWORD)
         ctx.throw({
@@ -42,17 +48,31 @@ loginController.post('/logout', async (ctx) => {
 
 // jwt token 续签
 loginController.post('/refreshToken', async (ctx) => {
-    const { name } = ctx.state.user
-    // 旧token延后30s失效
-    setTimeout(() => {
-        redis.set(ctx.header.authorization, true, 'EX', extime)
-    }, 30000)
-    const user = {
-        name: name,
-        exp: Math.floor(Date.now() / 1000) + expiresIn
+    const { authorization } = ctx.header
+    if (!authorization.startsWith('Bearer ')) {
+        ctx.throw(errorStatus.UNAUTHORIZED)
     }
-    const token = jwt.sign(user, secret)
-    ctx.ok(token)
+    try {
+        const refreshAuthorization = authorization.split(' ')[1]
+        const decoded = jwt.verify(refreshAuthorization, refreshSecret)
+        const extime = Math.ceil(decoded.exp - (Date.now() / 1000))
+        redis.set(authorization, true, 'EX', extime)
+        // 旧token延后30s失效)
+        const token = jwt.sign({
+            name: decoded.name,
+            exp: Math.floor(Date.now() / 1000) + expiresIn
+        }, secret)
+        const refreshToken = jwt.sign({
+            name: decoded.name,
+            exp: Math.floor(Date.now() / 1000) + refreshExpiresIn
+        }, refreshSecret)
+        ctx.ok({
+            token,
+            refreshToken
+        })
+    } catch (e) {
+        ctx.throw(errorStatus.UNAUTHORIZED)
+    }
 })
 
 // 账号注册
