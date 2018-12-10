@@ -3,6 +3,7 @@ const http = require('http')
 const bodyParser = require('koa-bodyparser')
 const koaJwt = require('koa-jwt')
 const config = require('config')
+const cors = require('koa-cors')
 // const convert = require('koa-convert')
 
 const logicMiddleware = require('./middleware/logicMiddleware.js')
@@ -25,6 +26,9 @@ app.use(bodyParser())
 //     key: 'sess:id'
 // }))
 
+app.use(cors({
+    maxAge: 1000000
+}))
 // 日志系统介介入
 app.use(logicMiddleware)
 // 返回参数方法接入
@@ -48,4 +52,4 @@ app.use(authMiddleware)
 app.use(routerIndex.routes())
 app.use(routerIndex.allowedMethods())
 
-http.createServer(app.callback()).listen(4000)
+http.createServer(app.callback()).listen(8080)

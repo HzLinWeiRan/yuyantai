@@ -1,8 +1,8 @@
 const Router = require('koa-router')
 
 const loginController = require('./loginController')
-const routerApi = require('./api')
-const adminApi = require('./admin')
+// const routerApi = require('./api')
+// const adminApi = require('./admin')
 
 const routerIndex = new Router()
 
