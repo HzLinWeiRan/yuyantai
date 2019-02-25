@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 
-const loginController = require('./loginController')
+const apiController = require('./api/index')
+const adminController = require('./admin/index')
 // const routerApi = require('./api')
 // const adminApi = require('./admin')
 
@@ -10,7 +11,9 @@ const regRouter = (router) => {
     routerIndex.use(router.routes(), router.allowedMethods())
 }
 
-regRouter(loginController)
+// regRouter(adminController)
+regRouter(adminController)
+regRouter(apiController)
 // 业务接口
 // routerIndex.use(routerApi.routes(), routerApi.allowedMethods())
 // // 管理后台接口

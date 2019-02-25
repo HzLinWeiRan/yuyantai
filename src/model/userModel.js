@@ -1,16 +1,10 @@
-const mongoose = require('mongoose')
+const createModel = require('../utils/createModel')
 
-const { Schema } = mongoose
-
-const userSchema = new Schema({
+module.exports = createModel('user', {
     name: {
         type: String,
         unique: true,
     },
     password: String,
-    role: String,
+    role: String
 })
-
-const UserModel = mongoose.model('user', userSchema)
-
-module.exports = UserModel

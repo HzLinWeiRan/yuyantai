@@ -8,5 +8,6 @@ const { url, conf } = mongodbConfig
 mongoose.connect(url, conf)
 
 module.exports = {
-    UserModel: require('./userModel')
+    UserModel: require('./userModel'),
+    AdModel: require('./adModel')
 }

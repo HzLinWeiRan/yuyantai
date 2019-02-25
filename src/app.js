@@ -3,6 +3,7 @@ const http = require('http')
 const bodyParser = require('koa-bodyparser')
 const koaJwt = require('koa-jwt')
 const config = require('config')
+const convert = require('koa-convert')
 const cors = require('koa-cors')
 // const convert = require('koa-convert')
 
@@ -26,9 +27,9 @@ app.use(bodyParser())
 //     key: 'sess:id'
 // }))
 
-app.use(cors({
+app.use(convert(cors({
     maxAge: 1000000
-}))
+})))
 // 日志系统介介入
 app.use(logicMiddleware)
 // 返回参数方法接入
@@ -41,9 +42,7 @@ app.use(koaJwt({
     secret
 }).unless({
     path: [
-        /^\/login/,
-        /^\/register/,
-        /^\/refreshToken/
+        /^\/(?!admin)/,
     ]
 }))
 

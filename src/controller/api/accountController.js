@@ -1,13 +1,25 @@
 const Router = require('koa-router')
 const jwt = require('jsonwebtoken')
 const config = require('config')
-const errorStatus = require('../utils/errorStatus')
+const errorStatus = require('../../utils/errorStatus')
 
-const { userProxy } = require('../proxy')
-const redis = require('../utils/redisUtil')
+const { userProxy } = require('../../proxy')
+const redis = require('../../utils/redisUtil')
 const { refreshSecret, refreshExpiresIn, secret, expiresIn } = config.get('jwt')
 
-const loginController = new Router()
+const loginController = new Router({
+    prefix: '/account'
+})
+
+const destroyToken = async (authToken, ss) => {
+    const authorization = authToken.split(' ')[1]
+    const decoded = jwt.verify(authorization, ss)
+    const extime = Math.ceil(decoded.exp - (Date.now() / 1000))
+    redis.set(authToken, true, 'EX', extime)
+    if (extime > 0) {
+        await redis.set(authToken, true, 'EX', extime)
+    }
+}
 
 // 用户登陆
 loginController.post('/login', async (ctx) => {
@@ -38,26 +50,22 @@ loginController.post('/login', async (ctx) => {
 })
 // 退出登陆标记token在一段时间内不可用
 loginController.post('/logout', async (ctx) => {
-    const { exp } = ctx.state.user
-    const extime = Math.ceil(exp - (Date.now() / 1000))
-    if (extime > 0) {
-        await redis.set(ctx.header.authorization, true, 'EX', extime)
-    }
-    ctx.ok('sucess')
+    await destroyToken(ctx.header.authorization, secret)
+    await destroyToken(ctx.header.refreshAuthorization, refreshSecret)
+    ctx.ok('success')
 })
 
 // jwt token 续签
 loginController.post('/refreshToken', async (ctx) => {
-    const { authorization } = ctx.header
-    if (!authorization.startsWith('Bearer ')) {
+    const { refreshauthorization } = ctx.header
+    if (!refreshauthorization.startsWith('Bearer ')) {
         ctx.throw(errorStatus.UNAUTHORIZED)
     }
     try {
-        const refreshAuthorization = authorization.split(' ')[1]
-        const decoded = jwt.verify(refreshAuthorization, refreshSecret)
-        const extime = Math.ceil(decoded.exp - (Date.now() / 1000))
-        redis.set(authorization, true, 'EX', extime)
-        // 旧token延后30s失效)
+        await destroyToken(refreshauthorization, refreshSecret)
+        const authorization = refreshauthorization.split(' ')[1]
+        const decoded = jwt.verify(authorization, refreshSecret)
+        // 返回新的token
         const token = jwt.sign({
             name: decoded.name,
             exp: Math.floor(Date.now() / 1000) + expiresIn
@@ -92,6 +100,11 @@ loginController.post('/register', async (ctx) => {
 // 获取当前用户信息
 loginController.get('/getUser', async (ctx) => {
     ctx.ok(ctx.state.user)
+})
+
+loginController.get('/userList', async (ctx) => {
+    const res = await userProxy.find({})
+    ctx.ok(res)
 })
 
 module.exports = loginController
