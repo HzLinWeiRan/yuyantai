@@ -21,7 +21,11 @@
         }
     },
     "jwt": {
-        "expiresIn": 300,
+        "expiresIn": 10000,
         "secret": "123456"
+    },
+    "upload": {
+        "rootDir": "/Users/luosu/Desktop/work/yuyantai-upload",
+        "rootPath": "/upload"
     }
 }

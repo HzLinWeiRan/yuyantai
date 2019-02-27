@@ -1,6 +1,8 @@
 const Koa = require('koa')
 const http = require('http')
 const bodyParser = require('koa-bodyparser')
+const koaBody = require('koa-body')
+const serve = require('koa-static-server')
 const koaJwt = require('koa-jwt')
 const config = require('config')
 const convert = require('koa-convert')
@@ -14,6 +16,7 @@ const authMiddleware = require('./middleware/authMiddleware.js')
 
 const jwtConfig = config.get('jwt')
 const { secret } = jwtConfig
+const { rootDir, rootPath } = config.get('upload')
 
 const app = new Koa()
 
@@ -26,6 +29,13 @@ app.use(bodyParser())
 // app.use(session({
 //     key: 'sess:id'
 // }))
+
+app.use(koaBody({
+    multipart: true,
+    formidable: {
+        maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+    }
+}))
 
 app.use(convert(cors({
     maxAge: 1000000
@@ -47,6 +57,11 @@ app.use(koaJwt({
 }))
 
 app.use(authMiddleware)
+
+app.use(serve({
+    rootDir,
+    rootPath
+}))
 
 app.use(routerIndex.routes())
 app.use(routerIndex.allowedMethods())

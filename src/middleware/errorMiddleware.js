@@ -7,12 +7,15 @@ module.exports = async (ctx, next) => {
     // }
     try {
         await next()
-        if (ctx.status === 404) {
-            ctx.throw(404)
+        if (ctx.url !== '/favicon.ico') {
+            if (ctx.status === 404) {
+                ctx.throw(404)
+            }
         }
     } catch (err) {
         ctx.logger.error(ctx.request, err)
         const status = err.code || err.statusCode || err.status
         ctx.error(status, errorStatus[status])
+        console.log(err.message)
     }
 }
