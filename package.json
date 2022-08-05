@@ -24,7 +24,7 @@
     "koa-static": "^5.0.0",
     "koa-static-server": "^1.4.0",
     "log4js": "^3.0.6",
-    "mongoose": "^5.3.13",
+    "mongoose": "^5.7.5",
     "mongoose-delete": "^0.5.0",
     "mongoose-paginate": "^5.0.3",
     "mongoose-paginate-v2": "^1.0.21",
